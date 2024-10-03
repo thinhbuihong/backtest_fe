@@ -5,6 +5,11 @@ import {
   List,
   ListIcon,
   ListItem,
+  FormLabel,
+  Input,
+  FormControl,
+  Button,
+  Flex,
 } from "@chakra-ui/react";
 import { CheckCircleIcon, LinkIcon } from "@chakra-ui/icons";
 
@@ -15,9 +20,49 @@ import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { CTA } from "../components/CTA";
 import { Footer } from "../components/Footer";
 
-const Index = () => (
-  <Container height="100vh">
-    <Hero />
+const Index = () => {
+  const init = 10_000;
+  const lost_v = 100;
+  const lost_p = 1;
+  const profit_v = 150;
+  const profit_p = 1.5;
+  const balance = 10_000;
+
+  return (
+    <Container height="100vh">
+      <DarkModeSwitch />
+
+      <Hero title="Backtest" />
+      <Container>
+        <Text color="text">hellaaaaaaaaaaaao</Text>
+        <FormControl>
+          <FormLabel htmlFor="init">Initial Balance</FormLabel>
+          <Input id="init" placeholder="Initial Balance"></Input>
+        </FormControl>
+
+        <FormControl>
+          <FormLabel htmlFor="profit">Profit</FormLabel>
+          <Flex>
+            <Input id="profit" placeholder="150"></Input>
+            <Button>Add</Button>
+          </Flex>
+        </FormControl>
+
+        <FormControl>
+          <FormLabel htmlFor="lost">Profit</FormLabel>
+          <Flex>
+            <Input id="lost" placeholder="100"></Input>
+            <Button>Add</Button>
+          </Flex>
+        </FormControl>
+      </Container>
+    </Container>
+  );
+};
+export default Index;
+
+{
+  /* <Hero />
     <Main>
       <Text color="text">
         Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code> +{" "}
@@ -49,8 +94,5 @@ const Index = () => (
     <Footer>
       <Text>Next ❤️ Chakra</Text>
     </Footer>
-    <CTA />
-  </Container>
-);
-
-export default Index;
+    <CTA /> */
+}

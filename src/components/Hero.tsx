@@ -1,10 +1,14 @@
 import { Flex, Heading } from "@chakra-ui/react";
 
-export const Hero = ({ title }: { title: string }) => (
+export const Hero = ({
+  title = "with-chakra-ui-typescript",
+}: {
+  title: string;
+}) => (
   <Flex
     justifyContent="center"
-    alignItems="center"
-    height="100vh"
+    alignItems="top"
+    // height="100vh"
     bgGradient="linear(to-l, heroGradientStart, heroGradientEnd)"
     bgClip="text"
   >
@@ -12,6 +16,6 @@ export const Hero = ({ title }: { title: string }) => (
   </Flex>
 );
 
-Hero.defaultProps = {
-  title: "with-chakra-ui-typescript",
-};
+// Hero.defaultProps = {
+//   title: "with-chakra-ui-typescript",
+// };
