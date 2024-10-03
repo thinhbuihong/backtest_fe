@@ -19,14 +19,45 @@ import { Main } from "../components/Main";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { CTA } from "../components/CTA";
 import { Footer } from "../components/Footer";
+import { Form, Formik, FormikHelpers } from "formik";
+import InputField from "../components/InputField";
 
 const Index = () => {
-  const init = 10_000;
-  const lost_v = 100;
-  const lost_p = 1;
-  const profit_v = 150;
-  const profit_p = 1.5;
-  const balance = 10_000;
+  const initial_values = {
+    init: 10_000,
+    lost_v: 100,
+    lost_p: 1,
+    profit_v: 150,
+    profit_p: 1.5,
+    balance: 10_000,
+  };
+  type InitialValues = typeof initial_values;
+
+  const handleSubmit = async (
+    value: InitialValues,
+    { setErrors, resetForm }: FormikHelpers<InitialValues>
+  ) => {
+    try {
+      console.log(value);
+      return;
+    } catch (error) {}
+  };
+
+  const handleProfit = (values: InitialValues, setValues) => {
+    console.log("profit", values);
+    setValues({
+      ...values,
+      init: +values.init + +values.profit_v,
+    });
+  };
+
+  const handleLost = (values: InitialValues, setValues) => {
+    console.log("lost", values);
+    setValues({
+      ...values,
+      init: +values.init - +values.lost_v,
+    });
+  };
 
   return (
     <Container height="100vh">
@@ -34,27 +65,39 @@ const Index = () => {
 
       <Hero title="Backtest" />
       <Container>
-        <Text color="text">hellaaaaaaaaaaaao</Text>
-        <FormControl>
-          <FormLabel htmlFor="init">Initial Balance</FormLabel>
-          <Input id="init" placeholder="Initial Balance"></Input>
-        </FormControl>
+        <Formik initialValues={initial_values} onSubmit={handleSubmit}>
+          {({ isSubmitting, errors, values, setValues }) => (
+            <Form>
+              <InputField
+                name="init"
+                label="Balance"
+                placeholder="Balance"
+              ></InputField>
 
-        <FormControl>
-          <FormLabel htmlFor="profit">Profit</FormLabel>
-          <Flex>
-            <Input id="profit" placeholder="150"></Input>
-            <Button>Add</Button>
-          </Flex>
-        </FormControl>
+              <Flex>
+                <InputField name="profit_v" label="Profit"></InputField>
+                <Button
+                  alignSelf={"flex-end"}
+                  onClick={() => handleProfit(values, setValues)}
+                  color={"green"}
+                >
+                  Add
+                </Button>
+              </Flex>
 
-        <FormControl>
-          <FormLabel htmlFor="lost">Profit</FormLabel>
-          <Flex>
-            <Input id="lost" placeholder="100"></Input>
-            <Button>Add</Button>
-          </Flex>
-        </FormControl>
+              <Flex>
+                <InputField name="lost_v" label="Lost"></InputField>
+                <Button
+                  color={"red"}
+                  alignSelf={"flex-end"}
+                  onClick={() => handleLost(values, setValues)}
+                >
+                  Add
+                </Button>
+              </Flex>
+            </Form>
+          )}
+        </Formik>
       </Container>
     </Container>
   );
