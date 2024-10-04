@@ -12,6 +12,7 @@ interface InputFieldProps {
   placeholder?: string;
   type?: string;
   textarea?: boolean;
+  disabled?: boolean;
 }
 
 const InputField = ({ textarea, ...props }: InputFieldProps) => {

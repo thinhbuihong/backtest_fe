@@ -1,38 +1,24 @@
-import {
-  Link as ChakraLink,
-  Text,
-  Code,
-  List,
-  ListIcon,
-  ListItem,
-  FormLabel,
-  Input,
-  FormControl,
-  Button,
-  Flex,
-} from "@chakra-ui/react";
-import { CheckCircleIcon, LinkIcon } from "@chakra-ui/icons";
+import { Button, Flex } from "@chakra-ui/react";
 
-import { Hero } from "../components/Hero";
-import { Container } from "../components/Container";
-import { Main } from "../components/Main";
-import { DarkModeSwitch } from "../components/DarkModeSwitch";
-import { CTA } from "../components/CTA";
-import { Footer } from "../components/Footer";
 import { Form, Formik, FormikHelpers } from "formik";
+import { Container } from "../components/Container";
+import { DarkModeSwitch } from "../components/DarkModeSwitch";
+import { Hero } from "../components/Hero";
 import InputField from "../components/InputField";
+import { TestResult } from "../components/TestResult";
+
+const initial_values = {
+  initial: 10_000,
+  lost_v: 100,
+  // lost_p: 1,
+  profit_v: 150,
+  // profit_p: 1.5,
+  balance: 10_000,
+  orders: [],
+};
+export type InitialValues = typeof initial_values;
 
 const Index = () => {
-  const initial_values = {
-    init: 10_000,
-    lost_v: 100,
-    lost_p: 1,
-    profit_v: 150,
-    profit_p: 1.5,
-    balance: 10_000,
-  };
-  type InitialValues = typeof initial_values;
-
   const handleSubmit = async (
     value: InitialValues,
     { setErrors, resetForm }: FormikHelpers<InitialValues>
@@ -45,17 +31,20 @@ const Index = () => {
 
   const handleProfit = (values: InitialValues, setValues) => {
     console.log("profit", values);
+    console.log("profit", initial_values);
+    values.orders.push(values.profit_v);
     setValues({
       ...values,
-      init: +values.init + +values.profit_v,
+      balance: +values.balance + +values.profit_v,
     });
   };
 
   const handleLost = (values: InitialValues, setValues) => {
     console.log("lost", values);
+    values.orders.push(-values.lost_v);
     setValues({
       ...values,
-      init: +values.init - +values.lost_v,
+      balance: +values.balance - +values.lost_v,
     });
   };
 
@@ -69,13 +58,24 @@ const Index = () => {
           {({ isSubmitting, errors, values, setValues }) => (
             <Form>
               <InputField
-                name="init"
+                name="initial"
+                label="Initial"
+                type="number"
+              ></InputField>
+
+              <InputField
+                name="balance"
                 label="Balance"
-                placeholder="Balance"
+                type="number"
+                disabled={true}
               ></InputField>
 
               <Flex>
-                <InputField name="profit_v" label="Profit"></InputField>
+                <InputField
+                  name="profit_v"
+                  label="Profit"
+                  type="number"
+                ></InputField>
                 <Button
                   alignSelf={"flex-end"}
                   onClick={() => handleProfit(values, setValues)}
@@ -86,7 +86,11 @@ const Index = () => {
               </Flex>
 
               <Flex>
-                <InputField name="lost_v" label="Lost"></InputField>
+                <InputField
+                  name="lost_v"
+                  label="Lost"
+                  type="number"
+                ></InputField>
                 <Button
                   color={"red"}
                   alignSelf={"flex-end"}
@@ -95,6 +99,8 @@ const Index = () => {
                   Add
                 </Button>
               </Flex>
+
+              <TestResult values={values} />
             </Form>
           )}
         </Formik>
