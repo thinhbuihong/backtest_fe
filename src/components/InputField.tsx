@@ -5,6 +5,7 @@ import {
 } from "@chakra-ui/form-control";
 import { Input, Textarea } from "@chakra-ui/react";
 import { useField } from "formik";
+import { KeyboardEventHandler } from "react";
 
 interface InputFieldProps {
   name: string;
@@ -13,6 +14,7 @@ interface InputFieldProps {
   type?: string;
   textarea?: boolean;
   disabled?: boolean;
+  onKeyDown?: KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
 const InputField = ({ textarea, ...props }: InputFieldProps) => {

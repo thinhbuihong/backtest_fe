@@ -30,8 +30,6 @@ const Index = () => {
   };
 
   const handleProfit = (values: InitialValues, setValues) => {
-    console.log("profit", values);
-    console.log("profit", initial_values);
     values.orders.push(values.profit_v);
     setValues({
       ...values,
@@ -40,12 +38,19 @@ const Index = () => {
   };
 
   const handleLost = (values: InitialValues, setValues) => {
-    console.log("lost", values);
     values.orders.push(-values.lost_v);
     setValues({
       ...values,
       balance: +values.balance - +values.lost_v,
     });
+  };
+
+  const handleKeyDown = (e, values, setValues, type: "Profit" | "Lost") => {
+    if (e.key != "Enter") {
+      return;
+    }
+    const func = type === "Profit" ? handleProfit : handleLost;
+    func(values, setValues);
   };
 
   return (
@@ -58,12 +63,6 @@ const Index = () => {
           {({ isSubmitting, errors, values, setValues }) => (
             <Form>
               <InputField
-                name="initial"
-                label="Initial"
-                type="number"
-              ></InputField>
-
-              <InputField
                 name="balance"
                 label="Balance"
                 type="number"
@@ -75,6 +74,9 @@ const Index = () => {
                   name="profit_v"
                   label="Profit"
                   type="number"
+                  onKeyDown={(e) =>
+                    handleKeyDown(e, values, setValues, "Profit")
+                  }
                 ></InputField>
                 <Button
                   alignSelf={"flex-end"}
@@ -90,6 +92,7 @@ const Index = () => {
                   name="lost_v"
                   label="Lost"
                   type="number"
+                  onKeyDown={(e) => handleKeyDown(e, values, setValues, "Lost")}
                 ></InputField>
                 <Button
                   color={"red"}
