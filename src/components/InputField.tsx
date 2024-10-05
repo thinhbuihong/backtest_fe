@@ -21,7 +21,7 @@ const InputField = ({ textarea, ...props }: InputFieldProps) => {
   const [field, { error }] = useField(props);
   // field include value, name, onChange
   // error set when submit
-  props.placeholder = props.placeholder || props.name;
+  props.placeholder = props.placeholder || props.label;
 
   return (
     <FormControl isInvalid={!!error}>

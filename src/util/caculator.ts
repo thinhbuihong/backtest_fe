@@ -8,6 +8,9 @@ export const numbLost = (orders: Array<number>): number => {
 
 export const winRate = (orders: Array<number>): number => {
   const result = (numbWin(orders) / orders.length) * 100;
+  if (isNaN(result)) {
+    return 0;
+  }
   return +result.toFixed(2);
 };
 

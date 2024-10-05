@@ -34,8 +34,8 @@ export const TestResult = ({ values }: { values: InitialValues }) => {
       <Text>Wins: {numbWin(orders)}</Text>
       <Text>Lost: {numbLost(orders)}</Text>
       <Text>Win rate: {winRate(orders)}%</Text>
-      <Text>Largest Profit: {Math.max(...orders)}$</Text>
-      <Text>Largest Lost: {Math.min(...orders)}$</Text>
+      <Text>Largest Profit: {Math.max(0, ...orders)}$</Text>
+      <Text>Largest Lost: {Math.min(0, ...orders)}$</Text>
       <Text>
         Profit: {gain_p}% ({gain_v}$)
       </Text>
