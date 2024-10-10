@@ -15,10 +15,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import useWindowDimensions from "../hooks/useDimentions";
 
 export const TestResult = ({ values }: { values: InitialValues }) => {
   const { orders, initial } = values;
   const [gain_p, gain_v] = profitCalculator(initial, orders);
+  const { height, width } = useWindowDimensions();
 
   const balance = [{ value: 0, index: 0 }];
   orders.forEach((value, index) => {

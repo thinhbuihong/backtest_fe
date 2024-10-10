@@ -69,7 +69,7 @@ const Index = () => {
                 disabled={true}
               ></InputField>
 
-              <Flex>
+              <Container>
                 <InputField
                   name="profit_v"
                   label="Profit"
@@ -79,15 +79,15 @@ const Index = () => {
                   }
                 ></InputField>
                 <Button
-                  alignSelf={"flex-end"}
+                  alignSelf={"self-start"}
                   onClick={() => handleProfit(values, setValues)}
                   color={"green"}
                 >
                   Add
                 </Button>
-              </Flex>
+              </Container>
 
-              <Flex>
+              <Container>
                 <InputField
                   name="lost_v"
                   label="Lost"
@@ -95,13 +95,13 @@ const Index = () => {
                   onKeyDown={(e) => handleKeyDown(e, values, setValues, "Lost")}
                 ></InputField>
                 <Button
+                  alignSelf={"self-start"}
                   color={"red"}
-                  alignSelf={"flex-end"}
                   onClick={() => handleLost(values, setValues)}
                 >
                   Add
                 </Button>
-              </Flex>
+              </Container>
 
               <TestResult values={values} />
             </Form>
