@@ -1,0 +1,5 @@
+fragment user_info on User {
+  id
+  email
+  name
+}

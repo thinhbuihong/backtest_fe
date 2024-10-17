@@ -42,19 +42,21 @@ export const TestResult = ({ values }: { values: InitialValues }) => {
         Profit: {gain_p}% ({gain_v}$)
       </Text>
 
-      <LineChart width={500} height={500} data={balance}>
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
-        {/* <XAxis dataKey="index" /> */}
-        {/* <YAxis /> */}
-        {/* <Legend /> */}
-        <Tooltip />
-        <Line
-          type="monotone"
-          dataKey="value"
-          stroke="#8884d8"
-          activeDot={{ r: 8 }}
-        />
-      </LineChart>
+      {values.orders.length && (
+        <LineChart width={500} height={500} data={balance}>
+          {/* <CartesianGrid strokeDasharray="3 3" /> */}
+          {/* <XAxis dataKey="index" /> */}
+          {/* <YAxis /> */}
+          {/* <Legend /> */}
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="value"
+            stroke="#8884d8"
+            activeDot={{ r: 8 }}
+          />
+        </LineChart>
+      )}
     </Container>
   );
 };

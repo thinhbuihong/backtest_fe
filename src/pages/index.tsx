@@ -6,6 +6,9 @@ import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { Hero } from "../components/Hero";
 import InputField from "../components/InputField";
 import { TestResult } from "../components/TestResult";
+import { useMeQuery } from "../gql-generated/__graphql__";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { addApolloState, initializeApollo } from "../util/apollo-client";
 
 const initial_values = {
   initial: 10_000,
@@ -19,6 +22,9 @@ const initial_values = {
 export type InitialValues = typeof initial_values;
 
 const Index = () => {
+  const { data: meData } = useMeQuery();
+  console.log(22222222222222222222, meData);
+
   const handleSubmit = async (
     value: InitialValues,
     { setErrors, resetForm }: FormikHelpers<InitialValues>
@@ -112,6 +118,27 @@ const Index = () => {
   );
 };
 export default Index;
+
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const apolloClient = initializeApollo(
+    {
+      //truyen header tu client de nextjs gui kem toi server
+    },
+    context.req.headers
+  );
+
+  // const { data } = await apolloClient.query({
+  //   query: PostsDocument,
+  //   variables: {
+  //     limit: 10,
+  //   },
+  // });
+
+  // return addApolloState(apolloClient, {});
+  return { props: {} };
+};
 
 {
   /* <Hero />
