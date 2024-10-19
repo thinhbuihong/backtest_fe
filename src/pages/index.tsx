@@ -1,14 +1,16 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 
 import { Form, Formik, FormikHelpers } from "formik";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { useSearchParams } from "next/navigation";
 import { Container } from "../components/Container";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { Hero } from "../components/Hero";
 import InputField from "../components/InputField";
+import Navbar from "../components/Navbar";
 import { TestResult } from "../components/TestResult";
 import { useMeQuery } from "../gql-generated/__graphql__";
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
-import { addApolloState, initializeApollo } from "../util/apollo-client";
+import { initializeApollo } from "../util/apollo-client";
 
 const initial_values = {
   initial: 10_000,
@@ -23,7 +25,14 @@ export type InitialValues = typeof initial_values;
 
 const Index = () => {
   const { data: meData } = useMeQuery();
-  console.log(22222222222222222222, meData);
+  const searchParams = useSearchParams();
+
+  const jwt = searchParams.get("jwt");
+  if (jwt && typeof window !== "undefined") {
+    localStorage.setItem("token", jwt);
+    useMeQuery();
+    window.history.replaceState(null, "", "/");
+  }
 
   const handleSubmit = async (
     value: InitialValues,
@@ -60,61 +69,66 @@ const Index = () => {
   };
 
   return (
-    <Container height="100vh">
-      <DarkModeSwitch />
+    <>
+      <Navbar />
+      <Container height="100vh">
+        <DarkModeSwitch />
 
-      <Hero title="Backtest" />
-      <Container>
-        <Formik initialValues={initial_values} onSubmit={handleSubmit}>
-          {({ isSubmitting, errors, values, setValues }) => (
-            <Form>
-              <InputField
-                name="balance"
-                label="Balance"
-                type="number"
-                disabled={true}
-              ></InputField>
-
-              <Container>
+        <Hero title="Backtest" />
+        <Container>
+          <Formik initialValues={initial_values} onSubmit={handleSubmit}>
+            {({ isSubmitting, errors, values, setValues }) => (
+              <Form>
                 <InputField
-                  name="profit_v"
-                  label="Profit"
+                  name="balance"
+                  label="Balance"
                   type="number"
-                  onKeyDown={(e) =>
-                    handleKeyDown(e, values, setValues, "Profit")
-                  }
+                  disabled={true}
                 ></InputField>
-                <Button
-                  alignSelf={"self-start"}
-                  onClick={() => handleProfit(values, setValues)}
-                  color={"green"}
-                >
-                  Add
-                </Button>
-              </Container>
 
-              <Container>
-                <InputField
-                  name="lost_v"
-                  label="Lost"
-                  type="number"
-                  onKeyDown={(e) => handleKeyDown(e, values, setValues, "Lost")}
-                ></InputField>
-                <Button
-                  alignSelf={"self-start"}
-                  color={"red"}
-                  onClick={() => handleLost(values, setValues)}
-                >
-                  Add
-                </Button>
-              </Container>
+                <Container>
+                  <InputField
+                    name="profit_v"
+                    label="Profit"
+                    type="number"
+                    onKeyDown={(e) =>
+                      handleKeyDown(e, values, setValues, "Profit")
+                    }
+                  ></InputField>
+                  <Button
+                    alignSelf={"self-start"}
+                    onClick={() => handleProfit(values, setValues)}
+                    color={"green"}
+                  >
+                    Add
+                  </Button>
+                </Container>
 
-              <TestResult values={values} />
-            </Form>
-          )}
-        </Formik>
+                <Container>
+                  <InputField
+                    name="lost_v"
+                    label="Lost"
+                    type="number"
+                    onKeyDown={(e) =>
+                      handleKeyDown(e, values, setValues, "Lost")
+                    }
+                  ></InputField>
+                  <Button
+                    alignSelf={"self-start"}
+                    color={"red"}
+                    onClick={() => handleLost(values, setValues)}
+                  >
+                    Add
+                  </Button>
+                </Container>
+
+                <TestResult values={values} />
+              </Form>
+            )}
+          </Formik>
+        </Container>
       </Container>
-    </Container>
+    </>
   );
 };
 export default Index;
@@ -122,7 +136,7 @@ export default Index;
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const apolloClient = initializeApollo(
+  const client = initializeApollo(
     {
       //truyen header tu client de nextjs gui kem toi server
     },

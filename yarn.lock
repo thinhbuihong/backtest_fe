@@ -589,6 +589,13 @@
   resolved "https://registry.yarnpkg.com/@chakra-ui/anatomy/-/anatomy-2.3.1.tgz#e75a0be6faa1de3123ff3c914b42664d4a202879"
   integrity sha512-eiZyE6kOqERZI9SrOSzKPy2jCNzWtrhuKQmLj8QfaPUVdjRw9eZ86A72C+r/82KOVi/4/uAxMuYrv48wzWbnVg==
 
+"@chakra-ui/breakpoint-utils@2.0.8":
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/breakpoint-utils/-/breakpoint-utils-2.0.8.tgz#750d3712668b69f6e8917b45915cee0e08688eed"
+  integrity sha512-Pq32MlEX9fwb5j5xx8s18zJMARNHlQZH2VH1RZgfgRDpp7DcEgtRW5AInfN5CfqdHLO1dGxA7I3MqEuL5JnIsA==
+  dependencies:
+    "@chakra-ui/shared-utils" "2.0.5"
+
 "@chakra-ui/color-mode@2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@chakra-ui/color-mode/-/color-mode-2.2.0.tgz#828d47234c74ba2fb4c5dd63a63331aead20b9f6"
@@ -629,10 +636,27 @@
   resolved "https://registry.yarnpkg.com/@chakra-ui/icons/-/icons-2.2.1.tgz#2392aa9c036475820081bf5298adb81f6a605845"
   integrity sha512-/v1zxmRqrBoOFtU0FJDvZ/Rf4wnee1G9V4BMB3F0lqKOHOoEOkv1ATyoHKqySx2rxNs0NWeDtsk7jdrUIEaGtQ==
 
+"@chakra-ui/layout@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/layout/-/layout-2.3.1.tgz#0601c5eb91555d24a7015a7c9d4e01fed2698557"
+  integrity sha512-nXuZ6WRbq0WdgnRgLw+QuxWAHuhDtVX8ElWqcTK+cSMFg/52eVP47czYBE5F35YhnoW2XBwfNoNgZ7+e8Z01Rg==
+  dependencies:
+    "@chakra-ui/breakpoint-utils" "2.0.8"
+    "@chakra-ui/icon" "3.2.0"
+    "@chakra-ui/object-utils" "2.1.0"
+    "@chakra-ui/react-children-utils" "2.0.6"
+    "@chakra-ui/react-context" "2.1.0"
+    "@chakra-ui/shared-utils" "2.0.5"
+
 "@chakra-ui/object-utils@2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@chakra-ui/object-utils/-/object-utils-2.1.0.tgz#a4ecf9cea92f1de09f5531f53ffdc41e0b19b6c3"
   integrity sha512-tgIZOgLHaoti5PYGPTwK3t/cqtcycW0owaiOXoZOcpwwX/vlVb+H1jFsQyWiiwQVPt9RkoSLtxzXamx+aHH+bQ==
+
+"@chakra-ui/react-children-utils@2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/react-children-utils/-/react-children-utils-2.0.6.tgz#6c480c6a60678fcb75cb7d57107c7a79e5179b92"
+  integrity sha512-QVR2RC7QsOsbWwEnq9YduhpqSFnZGvjjGREV8ygKi8ADhXh93C8azLECCUVgRJF2Wc+So1fgxmjLcbZfY2VmBA==
 
 "@chakra-ui/react-context@2.1.0":
   version "2.1.0"
@@ -905,7 +929,7 @@
     "@graphql-codegen/plugin-helpers" "^5.0.3"
     tslib "~2.6.0"
 
-"@graphql-codegen/cli@^5.0.3":
+"@graphql-codegen/cli@5.0.3":
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/cli/-/cli-5.0.3.tgz#d518ce5c011ff82496badef1342b3ba8d42efbcb"
   integrity sha512-ULpF6Sbu2d7vNEOgBtE9avQp2oMgcPY/QBYcCqk0Xru5fz+ISjcovQX29V7CS7y5wWBRzNLoXwJQGeEyWbl05g==
@@ -946,7 +970,7 @@
     yaml "^2.3.1"
     yargs "^17.0.0"
 
-"@graphql-codegen/client-preset@^4.4.0":
+"@graphql-codegen/client-preset@4.4.0", "@graphql-codegen/client-preset@^4.4.0":
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/client-preset/-/client-preset-4.4.0.tgz#f79d50ee2acb2d129072c1a080af90c30388fff7"
   integrity sha512-Q0NHFK7KXLhEaRC/k82ge0dHDfeHJEvvDeV0vV3+oSurHNa/lpxQtbK2BqknZe+JDfZ1YOOvYT93XsAkYD+SQg==
@@ -984,6 +1008,15 @@
     "@graphql-codegen/visitor-plugin-common" "5.4.0"
     "@graphql-tools/utils" "^10.0.0"
     auto-bind "~4.0.0"
+    tslib "~2.6.0"
+
+"@graphql-codegen/introspection@4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/introspection/-/introspection-4.0.3.tgz#756e39fb4529ea15d32a122f0bce9b0a66425379"
+  integrity sha512-4cHRG15Zu4MXMF4wTQmywNf4+fkDYv5lTbzraVfliDnB8rJKcaurQpRBi11KVuQUe24YTq/Cfk4uwewfNikWoA==
+  dependencies:
+    "@graphql-codegen/plugin-helpers" "^5.0.3"
+    "@graphql-codegen/visitor-plugin-common" "^5.0.0"
     tslib "~2.6.0"
 
 "@graphql-codegen/plugin-helpers@^2.7.2":
@@ -1091,7 +1124,7 @@
     parse-filepath "^1.0.2"
     tslib "~2.4.0"
 
-"@graphql-codegen/visitor-plugin-common@5.4.0", "@graphql-codegen/visitor-plugin-common@^5.4.0":
+"@graphql-codegen/visitor-plugin-common@5.4.0", "@graphql-codegen/visitor-plugin-common@^5.0.0", "@graphql-codegen/visitor-plugin-common@^5.4.0":
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/visitor-plugin-common/-/visitor-plugin-common-5.4.0.tgz#157846e433224b55f9a755e59d02508783977e27"
   integrity sha512-tL7hOrO+4MiNfDiHewhRQCiH9GTAh0M9Y/BZxYGGEdnrfGgqK5pCxtjq7EY/L19VGIyU7hhzYTQ0r1HzEbB4Jw==
