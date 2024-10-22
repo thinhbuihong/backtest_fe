@@ -27,7 +27,7 @@ const Index = () => {
   const { data: meData } = useMeQuery();
   const searchParams = useSearchParams();
 
-  const jwt = searchParams.get("jwt");
+  const jwt = searchParams?.get("jwt");
   if (jwt && typeof window !== "undefined") {
     localStorage.setItem("token", jwt);
     useMeQuery();
