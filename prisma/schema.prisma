@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model migrations {
+  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
+  timestamp BigInt
+  name      String @db.VarChar
+}
+
+model order {
+  id          Int       @id(map: "PK_1031171c13130102495201e3e20") @default(autoincrement())
+  strategy_id Int
+  change      Float
+  is_profit   Boolean
+  change_type String    @db.VarChar
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at  DateTime? @db.Timestamptz(6)
+  strategyId  Int?
+  strategy    strategy? @relation(fields: [strategyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_070581df53052d2b111a3046bab")
+}
+
+model strategy {
+  id           Int       @id(map: "PK_733d2c3d4a73c020375b9b3581d") @default(autoincrement())
+  user_id      Int
+  name         String    @db.VarChar
+  description  String    @db.VarChar
+  total_orders Int       @default(0)
+  orders_win   Int       @default(0)
+  orders_lost  Int       @default(0)
+  profit       Float     @default(0)
+  win_rate     Float     @default(0)
+  max_drawdown Float     @default(0)
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at   DateTime? @db.Timestamptz(6)
+  userId       Int?
+  order        order[]
+  user         user?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c1c10ab196af1494177a8b08fc9")
+}
+
+model user {
+  id       Int        @id(map: "PK_cace4a159ff9f2512dd42373760") @default(autoincrement())
+  email    String     @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar
+  name     String     @db.VarChar
+  strategy strategy[]
+}
