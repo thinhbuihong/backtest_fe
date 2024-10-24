@@ -5,7 +5,8 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "codegen": "graphql-codegen --config codegen.yml",
-    "codegen:config": "node replaceEnv"
+    "codegen:config": "node replaceEnv",
+    "prisma:gen": "prisma migrate dev --name "
   },
   "dependencies": {
     "@apollo/client": "^3.11.8",

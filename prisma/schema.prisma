@@ -15,15 +15,14 @@ model migrations {
 
 model order {
   id          Int       @id(map: "PK_1031171c13130102495201e3e20") @default(autoincrement())
-  strategy_id Int
   change      Float
   is_profit   Boolean
   change_type String    @db.VarChar
   created_at  DateTime  @default(now()) @db.Timestamptz(6)
   updated_at  DateTime  @default(now()) @db.Timestamptz(6)
   deleted_at  DateTime? @db.Timestamptz(6)
-  strategyId  Int?
-  strategy    strategy? @relation(fields: [strategyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_070581df53052d2b111a3046bab")
+  strategy_id  Int
+  strategy    strategy? @relation(fields: [strategy_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_070581df53052d2b111a3046bab")
 }
 
 model strategy {
@@ -40,9 +39,8 @@ model strategy {
   created_at   DateTime  @default(now()) @db.Timestamptz(6)
   updated_at   DateTime  @default(now()) @db.Timestamptz(6)
   deleted_at   DateTime? @db.Timestamptz(6)
-  userId       Int?
   order        order[]
-  user         user?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c1c10ab196af1494177a8b08fc9")
+  user         user?     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c1c10ab196af1494177a8b08fc9")
 }
 
 model user {

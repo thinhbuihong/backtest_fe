@@ -1,0 +1,61 @@
+-- CreateTable
+CREATE TABLE "migrations" (
+    "id" SERIAL NOT NULL,
+    "timestamp" BIGINT NOT NULL,
+    "name" VARCHAR NOT NULL,
+
+    CONSTRAINT "PK_8c82d7f526340ab734260ea46be" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "order" (
+    "id" SERIAL NOT NULL,
+    "strategy_id" INTEGER NOT NULL,
+    "change" DOUBLE PRECISION NOT NULL,
+    "is_profit" BOOLEAN NOT NULL,
+    "change_type" VARCHAR NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ(6),
+    "strategyId" INTEGER,
+
+    CONSTRAINT "PK_1031171c13130102495201e3e20" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "strategy" (
+    "id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "name" VARCHAR NOT NULL,
+    "description" VARCHAR NOT NULL,
+    "total_orders" INTEGER NOT NULL DEFAULT 0,
+    "orders_win" INTEGER NOT NULL DEFAULT 0,
+    "orders_lost" INTEGER NOT NULL DEFAULT 0,
+    "profit" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "win_rate" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "max_drawdown" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ(6),
+    "userId" INTEGER,
+
+    CONSTRAINT "PK_733d2c3d4a73c020375b9b3581d" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "user" (
+    "id" SERIAL NOT NULL,
+    "email" VARCHAR NOT NULL,
+    "name" VARCHAR NOT NULL,
+
+    CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UQ_e12875dfb3b1d92d7d7c5377e22" ON "user"("email");
+
+-- AddForeignKey
+ALTER TABLE "order" ADD CONSTRAINT "FK_070581df53052d2b111a3046bab" FOREIGN KEY ("strategyId") REFERENCES "strategy"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "strategy" ADD CONSTRAINT "FK_c1c10ab196af1494177a8b08fc9" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
