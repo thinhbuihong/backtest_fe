@@ -1,19 +1,14 @@
-import { createEdgeRouter, createRouter } from "next-connect";
-import { NextFetchEvent, NextRequest } from "next/server";
 import { NextApiRequest, NextApiResponse } from "next";
+import { createRouter } from "next-connect";
 import { session } from "../../../lib/session";
-import { passport } from "../../../lib/passport";
+import { authMiddleware } from "../../../middleware/auth-middleware";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.use(session as any);
 
-router.get((req: any, res: any) => {
-  console.log(1111111111111111, req.session.isNew);
-  if (!req.session?.passport?.user) {
-    return res.status(401).send("Not authenticated");
-  }
-  res.json({ user: req.session.passport.user });
+router.get(authMiddleware(), (req: any, res: any) => {
+  return res.json(req?.user);
 });
 
 export default router.handler({
