@@ -1,10 +1,13 @@
 import { user } from "@prisma/client";
 import { create } from "zustand";
+import { getToken } from "../util/window";
 
 interface AppState {
   user: user | null;
   setUser: (user: user | null) => void;
   logout: () => void;
+  token?: string;
+  setToken: () => void;
 }
 
 const logMiddleware = (config) => (set, get, api) =>
@@ -14,12 +17,19 @@ const logMiddleware = (config) => (set, get, api) =>
     console.log("State after update:", get());
   });
 
-export const useStore = create<AppState>((set, get) => ({
+const stateCreator = (set, get: AppState): AppState => ({
   user: null,
   setUser: (user) => set((state) => ({ user })),
   logout: () =>
     set((state) => {
-      localStorage.removeItem("jwt");
+      localStorage.removeItem("token");
       return { user: null };
     }),
-}));
+  setToken: () => {
+    set((state) => {
+      const token = getToken();
+      return { token };
+    });
+  },
+});
+export const useStore = create<AppState>(logMiddleware(stateCreator));

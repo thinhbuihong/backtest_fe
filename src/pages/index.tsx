@@ -12,6 +12,8 @@ import { TestResult } from "../components/TestResult";
 import { useMeQuery } from "../gql-generated/__graphql__";
 import { initializeApollo } from "../util/apollo-client";
 
+import { isBrowser } from "../util/window";
+
 const initial_values = {
   initial: 10_000,
   lost_v: 100,
@@ -19,18 +21,18 @@ const initial_values = {
   profit_v: 150,
   // profit_p: 1.5,
   balance: 10_000,
-  orders: [],
+  orders: [] as number[],
 };
 export type InitialValues = typeof initial_values;
 
 const Index = () => {
-  const { data: meData } = useMeQuery();
+  // const { data: meData } = useMeQuery();
   const searchParams = useSearchParams();
 
   const jwt = searchParams?.get("jwt");
-  if (jwt && typeof window !== "undefined") {
+  if (jwt && isBrowser()) {
     localStorage.setItem("token", jwt);
-    useMeQuery();
+    // useMeQuery();
     window.history.replaceState(null, "", "/");
   }
 
@@ -133,26 +135,26 @@ const Index = () => {
 };
 export default Index;
 
-export const getServerSideProps: GetServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const client = initializeApollo(
-    {
-      //truyen header tu client de nextjs gui kem toi server
-    },
-    context.req.headers
-  );
+// export const getServerSideProps: GetServerSideProps = async (
+//   context: GetServerSidePropsContext
+// ) => {
+// const client = initializeApollo(
+//   {
+//     //truyen header tu client de nextjs gui kem toi server
+//   },
+//   context.req.headers
+// );
 
-  // const { data } = await apolloClient.query({
-  //   query: PostsDocument,
-  //   variables: {
-  //     limit: 10,
-  //   },
-  // });
+// const { data } = await apolloClient.query({
+//   query: PostsDocument,
+//   variables: {
+//     limit: 10,
+//   },
+// });
 
-  // return addApolloState(apolloClient, {});
-  return { props: {} };
-};
+// return addApolloState(apolloClient, {});
+//   return { props: {} };
+// };
 
 {
   /* <Hero />

@@ -3,37 +3,42 @@ import { Box, Heading } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useMeQuery } from "../gql-generated/__graphql__";
+import { useStore } from "../store/store";
 // import * as Apollo from '@apollo/client';
 
 const Navbar = () => {
   const { data, loading, error, updateQuery } = useMeQuery();
   const router = useRouter();
-  const client = useApolloClient();
+  // const client = useApolloClient();
+
+  const { user, setUser } = useStore();
 
   const logoutUser = async () => {
     localStorage.removeItem("token");
-    client.cache.modify({
-      fields: {
-        me(existing) {
-          return null;
-        },
-      },
-    });
+    setUser(null);
+    // client.cache.modify({
+    //   fields: {
+    //     me(existing) {
+    //       return null;
+    //     },
+    //   },
+    // });
   };
 
   let body;
 
-  const loginUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/google`.replace(
-    "/graphql",
-    ""
-  );
+  // const loginUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/google`.replace(
+  //   "/graphql",
+  //   ""
+  // );
   const login = () => {
-    router.push(loginUrl);
+    router.push("/api/auth/google");
   };
 
   if (loading) {
     body = null;
-  } else if (!data?.me) {
+  } else if (!user) {
+    // } else if (!data?.me) {
     body = (
       <>
         <Button onClick={login}>
@@ -49,7 +54,7 @@ const Navbar = () => {
         <Button marginRight={4} onClick={logoutUser}>
           Logout
         </Button>
-        <Heading fontSize={"medium"}>{data.me.name}</Heading>
+        <Heading fontSize={"medium"}>{user.name.toString()}</Heading>
       </>
     );
   }
