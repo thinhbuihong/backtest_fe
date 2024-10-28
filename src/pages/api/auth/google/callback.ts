@@ -3,6 +3,9 @@ import { createRouter, NextHandler } from "next-connect";
 import { passport } from "../../../../lib/passport";
 import { session } from "../../../../lib/session";
 import { signJwt } from "../../../../lib/jwt";
+import { prisma } from "../../../../lib/prisma";
+import { get } from "lodash";
+import { user } from "@prisma/client";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -15,11 +18,27 @@ router.get(
   passport.authenticate("google", {
     failureRedirect: "/",
   }),
-  async (req, res: any) => {
+  async (req, res) => {
     // Đăng nhập thành công, chuyển hướng về trang chủ
     console.log("on next passport");
+    const googleInfo = get(req, "user") as any;
+    const email = get(req, "user.emails.0.value", "");
+    if (!email || !googleInfo) res.status(401).send("Not Authentication");
 
-    const user = req?.["user"];
+    let user = await prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+    if (!user) {
+      //create user
+      user = await prisma.user.create({
+        data: {
+          email,
+          name: googleInfo.displayName,
+        },
+      });
+    }
     const jwt = await signJwt(user);
 
     res.writeHead(302, {

@@ -7,11 +7,11 @@ export const signJwt = async (payload: any): Promise<string> => {
   return token;
 };
 
-export const verifyJwt = async (
+export const verifyJwt = async <T = any>(
   jwt: string
-): Promise<string | JwtPayload | null> => {
+): Promise<(JwtPayload & T) | null> => {
   try {
-    return await verify(jwt, secret);
+    return (await verify(jwt, secret)) as any;
   } catch (error) {
     return null;
   }

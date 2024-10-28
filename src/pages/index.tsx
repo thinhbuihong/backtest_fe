@@ -13,6 +13,8 @@ import { useMeQuery } from "../gql-generated/__graphql__";
 import { initializeApollo } from "../util/apollo-client";
 
 import { isBrowser } from "../util/window";
+import useFetchUser from "../hooks/useFetchMe";
+import { useRouter } from "next/router";
 
 const initial_values = {
   initial: 10_000,
@@ -28,12 +30,15 @@ export type InitialValues = typeof initial_values;
 const Index = () => {
   // const { data: meData } = useMeQuery();
   const searchParams = useSearchParams();
+  const { refetchUser } = useFetchUser(false);
+  const router = useRouter();
 
   const jwt = searchParams?.get("jwt");
   if (jwt && isBrowser()) {
     localStorage.setItem("token", jwt);
     // useMeQuery();
-    window.history.replaceState(null, "", "/");
+    router.push("/");
+    refetchUser();
   }
 
   const handleSubmit = async (

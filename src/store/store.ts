@@ -12,9 +12,9 @@ interface AppState {
 
 const logMiddleware = (config) => (set, get, api) =>
   config((args) => {
-    console.log("State before update:", get());
+    console.log("+".repeat(10), "State before update:", get());
     set(args);
-    console.log("State after update:", get());
+    console.log("+".repeat(10), "State after update:", get());
   });
 
 const stateCreator = (set, get: AppState): AppState => ({
