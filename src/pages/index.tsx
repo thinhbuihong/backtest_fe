@@ -19,7 +19,7 @@ import { initializeApollo } from "../util/apollo-client";
 import { isBrowser } from "../util/window";
 import useFetchUser from "../hooks/useFetchMe";
 import { useRouter } from "next/router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   useDisclosure,
   AlertDialog,
@@ -47,6 +47,57 @@ const Index = () => {
   const { refetchUser } = useFetchUser(false);
   const router = useRouter();
   const [showTestResult, setShowTestResult] = useState(false);
+
+  // Toggle result/backtest with spacebar
+  // Also: Q = profit, W = lost
+  // Use refs to always get latest values/setValues from Formik
+  const valuesRef = useRef<any>(null);
+  const setValuesRef = useRef<any>(null);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.code === "Space" && !e.repeat) {
+        setShowTestResult((prev) => !prev);
+      }
+      if (
+        (e.key === "q" || e.key === "Q") &&
+        valuesRef.current &&
+        setValuesRef.current
+      ) {
+        handleProfit(valuesRef.current, setValuesRef.current);
+      }
+      if (
+        (e.key === "w" || e.key === "W") &&
+        valuesRef.current &&
+        setValuesRef.current
+      ) {
+        handleLost(valuesRef.current, setValuesRef.current);
+      }
+      // Ctrl+Z: remove last order
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        (e.key === "z" || e.key === "Z") &&
+        valuesRef.current &&
+        setValuesRef.current
+      ) {
+        const values = valuesRef.current;
+        const setValues = setValuesRef.current;
+        if (values.orders.length > 0) {
+          const newOrders = [...values.orders];
+          newOrders.pop();
+          const newBalance =
+            values.initial + newOrders.reduce((acc, v) => acc + v, 0);
+          setValues({
+            ...values,
+            orders: newOrders,
+            balance: newBalance,
+          });
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
 
   const jwt = searchParams?.get("jwt");
   if (jwt && isBrowser()) {
@@ -92,183 +143,198 @@ const Index = () => {
 
   return (
     <>
-      <Navbar />
       <Container height="100vh">
         <DarkModeSwitch />
 
         <Hero title="Backtest" />
         <Formik initialValues={initial_values} onSubmit={handleSubmit}>
-          {({ isSubmitting, errors, values, setValues }) => (
-            <Container
-              width="100%"
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-            >
-              {/* Nút chuyển đổi luôn nằm trên Hero */}
-              <Box
+          {({ isSubmitting, errors, values, setValues }) => {
+            // Always keep latest values/setValues in refs for global keydown
+            valuesRef.current = values;
+            setValuesRef.current = setValues;
+            return (
+              <Container
                 width="100%"
-                maxWidth={["95vw", "700px"]}
-                mb={2}
                 display="flex"
-                justifyContent="center"
-              >
-                {showTestResult ? (
-                  <Button
-                    colorScheme="blue"
-                    width="200px"
-                    onClick={() => setShowTestResult(false)}
-                  >
-                    Back to Backtest
-                  </Button>
-                ) : (
-                  <Button
-                    colorScheme="blue"
-                    width="200px"
-                    onClick={() => setShowTestResult(true)}
-                  >
-                    Show Test Result
-                  </Button>
-                )}
-              </Box>
-
-              {/* Danh sách profit/lost nhập vào */}
-              <Box
-                width="100%"
-                maxWidth={["95vw", "700px"]}
-                mb={4}
-                display="flex"
-                flexWrap="nowrap"
-                justifyContent="center"
+                flexDirection="column"
                 alignItems="center"
-                fontSize="sm"
-                color="gray.700"
-                minHeight="32px"
-                overflowX={values.orders.length > 4 ? "auto" : "unset"}
-                sx={{
-                  "::-webkit-scrollbar": { height: "6px" },
-                  "::-webkit-scrollbar-thumb": {
-                    background: "#CBD5E0",
-                    borderRadius: "8px",
-                  },
-                }}
               >
-                {values.orders.length === 0 ? (
-                  <span>No profit/loss history</span>
-                ) : (
-                  <>
-                    {[...values.orders]
-                      .slice(-4)
-                      .reverse()
-                      .map((v, i) => {
-                        const orderIdx = values.orders.length - 1 - i;
-                        return (
-                          <Box
-                            key={orderIdx}
-                            px={2}
-                            py={1}
-                            m={1}
-                            borderRadius="md"
-                            bg={v >= 0 ? "green.100" : "red.100"}
-                            color={v >= 0 ? "green.700" : "red.700"}
-                            fontWeight="bold"
-                            minW="48px"
-                            textAlign="center"
-                            flexShrink={0}
-                            style={{ maxWidth: "80px", position: "relative" }}
-                          >
-                            <DeleteOrderButton
-                              onDelete={() => {
-                                const newOrders = [...values.orders];
-                                newOrders.splice(orderIdx, 1);
-                                const newBalance =
-                                  values.initial +
-                                  newOrders.reduce((acc, v) => acc + v, 0);
-                                setValues({
-                                  ...values,
-                                  orders: newOrders,
-                                  balance: newBalance,
-                                });
-                              }}
-                              label="Delete order"
-                            />
-                            {v >= 0 ? `+${v}` : v}
-                          </Box>
-                        );
-                      })}
-                    <DeleteHistoryButton
-                      values={values}
-                      setValues={setValues}
-                    />
-                  </>
-                )}
-              </Box>
-              {showTestResult ? (
-                <Container width="100%" maxWidth={["95vw", "700px"]} mt={8}>
-                  <TestResult values={values} />
-                </Container>
-              ) : (
-                <Container
-                  id="backtest-form"
+                {/* Nút chuyển đổi luôn nằm trên Hero */}
+                <Box
                   width="100%"
-                  maxWidth={["95vw", "540px"]}
+                  maxWidth={["95vw", "700px"]}
+                  mb={2}
+                  display="flex"
+                  justifyContent="center"
                 >
-                  <Form>
-                    <Box width="100%">
-                      <InputField
-                        name="balance"
-                        label="Balance"
-                        type="number"
-                        disabled={true}
+                  {showTestResult ? (
+                    <Button
+                      colorScheme="blue"
+                      width="200px"
+                      onClick={() => setShowTestResult(false)}
+                    >
+                      Back to Backtest
+                    </Button>
+                  ) : (
+                    <Button
+                      colorScheme="blue"
+                      width="200px"
+                      onClick={() => setShowTestResult(true)}
+                    >
+                      Show Test Result
+                    </Button>
+                  )}
+                </Box>
+
+                {/* Danh sách profit/lost nhập vào */}
+                <Box
+                  width="100%"
+                  maxWidth={["95vw", "700px"]}
+                  mb={4}
+                  display="flex"
+                  flexWrap="nowrap"
+                  justifyContent="center"
+                  alignItems="center"
+                  fontSize="sm"
+                  color="gray.700"
+                  minHeight="32px"
+                  overflowX={values.orders.length > 4 ? "auto" : "unset"}
+                  sx={{
+                    "::-webkit-scrollbar": { height: "6px" },
+                    "::-webkit-scrollbar-thumb": {
+                      background: "#CBD5E0",
+                      borderRadius: "8px",
+                    },
+                  }}
+                >
+                  {values.orders.length === 0 ? (
+                    <span>No profit/loss history</span>
+                  ) : (
+                    <>
+                      {[...values.orders]
+                        .slice(-4)
+                        .reverse()
+                        .map((v, i) => {
+                          const orderIdx = values.orders.length - 1 - i;
+                          return (
+                            <Box
+                              key={orderIdx}
+                              px={2}
+                              py={1}
+                              m={1}
+                              borderRadius="md"
+                              bg={v >= 0 ? "green.100" : "red.100"}
+                              color={v >= 0 ? "green.700" : "red.700"}
+                              fontWeight="bold"
+                              minW="48px"
+                              textAlign="center"
+                              flexShrink={0}
+                              style={{ maxWidth: "80px", position: "relative" }}
+                            >
+                              <DeleteOrderButton
+                                onDelete={() => {
+                                  const newOrders = [...values.orders];
+                                  newOrders.splice(orderIdx, 1);
+                                  const newBalance =
+                                    values.initial +
+                                    newOrders.reduce((acc, v) => acc + v, 0);
+                                  setValues({
+                                    ...values,
+                                    orders: newOrders,
+                                    balance: newBalance,
+                                  });
+                                }}
+                                label="Delete order"
+                              />
+                              {v >= 0 ? `+${v}` : v}
+                            </Box>
+                          );
+                        })}
+                      <DeleteHistoryButton
+                        values={values}
+                        setValues={setValues}
                       />
-                    </Box>
-
-                    <Container display="flex" alignItems="center" gap={2}>
+                    </>
+                  )}
+                </Box>
+                {showTestResult ? (
+                  <Container width="100%" maxWidth={["95vw", "700px"]} mt={8}>
+                    <TestResult values={values} />
+                  </Container>
+                ) : (
+                  <Container
+                    id="backtest-form"
+                    width="100%"
+                    maxWidth={["95vw", "540px"]}
+                  >
+                    <Form>
                       <Box width="100%">
                         <InputField
-                          name="profit_v"
-                          label="Profit"
+                          name="balance"
+                          label="Balance"
                           type="number"
-                          onKeyDown={(e) =>
-                            handleKeyDown(e, values, setValues, "Profit")
-                          }
+                          disabled={true}
                         />
                       </Box>
-                      <Button
-                        alignSelf={"self-start"}
-                        onClick={() => handleProfit(values, setValues)}
-                        color={"green"}
-                      >
-                        Add
-                      </Button>
-                    </Container>
 
-                    <Container display="flex" alignItems="center" gap={2}>
-                      <Box width="100%">
-                        <InputField
-                          name="lost_v"
-                          label="Lost"
-                          type="number"
-                          onKeyDown={(e) =>
-                            handleKeyDown(e, values, setValues, "Lost")
-                          }
-                        />
-                      </Box>
-                      <Button
-                        alignSelf={"self-start"}
-                        color={"red"}
-                        onClick={() => handleLost(values, setValues)}
-                      >
-                        Add
-                      </Button>
-                    </Container>
-                  </Form>
-                </Container>
-              )}
-            </Container>
-          )}
+                      <Container display="flex" alignItems="center" gap={2}>
+                        <Box width="100%">
+                          <InputField
+                            name="profit_v"
+                            label="Profit"
+                            type="number"
+                            onKeyDown={(e) =>
+                              handleKeyDown(e, values, setValues, "Profit")
+                            }
+                          />
+                        </Box>
+                        <Button
+                          alignSelf={"self-start"}
+                          onClick={() => handleProfit(values, setValues)}
+                          color={"green"}
+                        >
+                          Add
+                        </Button>
+                      </Container>
+
+                      <Container display="flex" alignItems="center" gap={2}>
+                        <Box width="100%">
+                          <InputField
+                            name="lost_v"
+                            label="Lost"
+                            type="number"
+                            onKeyDown={(e) =>
+                              handleKeyDown(e, values, setValues, "Lost")
+                            }
+                          />
+                        </Box>
+                        <Button
+                          alignSelf={"self-start"}
+                          color={"red"}
+                          onClick={() => handleLost(values, setValues)}
+                        >
+                          Add
+                        </Button>
+                      </Container>
+                    </Form>
+                  </Container>
+                )}
+              </Container>
+            );
+          }}
         </Formik>
       </Container>
+      {/* Fixed Navbar at the bottom */}
+      <Box
+        position="fixed"
+        left={0}
+        right={0}
+        bottom={0}
+        zIndex={1000}
+        width="100%"
+      >
+        <Navbar />
+      </Box>
     </>
   );
 };

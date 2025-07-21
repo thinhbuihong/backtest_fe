@@ -41,8 +41,8 @@ const Navbar = () => {
     // } else if (!data?.me) {
     body = (
       <>
-        <Button onClick={login}>
-          <Heading mr={2} fontSize={"medium"}>
+        <Button onClick={login} colorScheme="blue" variant="solid">
+          <Heading mr={0.5} fontSize={"medium"} color="white">
             Login
           </Heading>
         </Button>
@@ -67,7 +67,7 @@ const Navbar = () => {
       justifyContent={"flex-end"}
       alignItems={"center"}
       padding={4}
-      paddingRight={20}
+      // paddingRight={20}
     >
       {body}
     </Box>
