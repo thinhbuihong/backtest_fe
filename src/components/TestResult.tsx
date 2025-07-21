@@ -32,31 +32,57 @@ export const TestResult = ({ values }: { values: InitialValues }) => {
   });
 
   return (
-    <Container marginTop={"2rem"} maxWidth="540px" width="100%">
-      <Text>Total order: {orders.length}</Text>
-      <Text>Wins: {numbWin(orders)}</Text>
-      <Text>Lost: {numbLost(orders)}</Text>
-      <Text>Win rate: {winRate(orders)}%</Text>
-      <Text>Largest Profit: {Math.max(0, ...orders)}$</Text>
-      <Text>Largest Lost: {Math.min(0, ...orders)}$</Text>
-      <Text>
-        Profit: {gain_p}% ({gain_v}$)
-      </Text>
+    <Container maxWidth="540px" width="100%" paddingY={2}>
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems="flex-start"
+        width="100%"
+      >
+        <Box flex={1}>
+          <Text mb={1}>Total order: {orders.length}</Text>
+          <Text mb={1}>Wins: {numbWin(orders)}</Text>
+          <Text mb={1}>Lost: {numbLost(orders)}</Text>
+          <Text mb={1}>Win rate: {winRate(orders)}%</Text>
+          <Text mb={1}>Largest Profit: {Math.max(0, ...orders)}$</Text>
+          <Text mb={1}>Largest Lost: {Math.min(0, ...orders)}$</Text>
+          <Text mb={1}>
+            Profit: {gain_p}% ({gain_v}$)
+          </Text>
+        </Box>
+        {/* Show note on the right */}
+        {values.note && (
+          <Box
+            flex={1}
+            ml={4}
+            p={2}
+            borderRadius="md"
+            bg="#f7fafc"
+            minHeight="120px"
+            maxWidth="250px"
+            wordBreak="break-word"
+          >
+            <Text fontWeight="bold" mb={1}>
+              Note
+            </Text>
+            <Text whiteSpace="pre-line">{values.note}</Text>
+          </Box>
+        )}
+      </Box>
 
       {values.orders.length > 0 && (
-        <Box width="100%" maxW="500px" height="300px">
+        <Box width="100%" maxW="500px" height="300px" mt={2} mb={0} p={0}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={balance}>
-              {/* <CartesianGrid strokeDasharray="3 3" /> */}
-              {/* <XAxis dataKey="index" /> */}
-              {/* <YAxis /> */}
-              {/* <Legend /> */}
+              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+              <XAxis dataKey="index" />
+              <YAxis />
               <Tooltip />
               <Line
                 type="monotone"
                 dataKey="value"
                 stroke="#8884d8"
-                activeDot={{ r: 8 }}
+                dot={false}
               />
             </LineChart>
           </ResponsiveContainer>

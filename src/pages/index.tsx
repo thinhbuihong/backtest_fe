@@ -38,6 +38,7 @@ const initial_values = {
   // profit_p: 1.5,
   balance: 10_000,
   orders: [] as number[],
+  note: "",
 };
 export type InitialValues = typeof initial_values;
 
@@ -56,6 +57,16 @@ const Index = () => {
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
+      // Prevent spacebar shortcut if focus is in the note input
+      const active = document.activeElement;
+      if (
+        e.code === "Space" &&
+        !e.repeat &&
+        active &&
+        (active as HTMLElement).getAttribute("name") === "note"
+      ) {
+        return;
+      }
       if (e.code === "Space" && !e.repeat) {
         setShowTestResult((prev) => !prev);
       }
@@ -190,7 +201,7 @@ const Index = () => {
                 <Box
                   width="100%"
                   maxWidth={["95vw", "700px"]}
-                  mb={4}
+                  mb={0.5}
                   display="flex"
                   flexWrap="nowrap"
                   justifyContent="center"
@@ -316,6 +327,15 @@ const Index = () => {
                           Add
                         </Button>
                       </Container>
+                      {/* Note input */}
+                      <Box width="100%" mt={2}>
+                        <InputField
+                          name="note"
+                          label="Note"
+                          textarea
+                          placeholder="Note..."
+                        />
+                      </Box>
                     </Form>
                   </Container>
                 )}

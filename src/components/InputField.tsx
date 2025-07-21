@@ -25,7 +25,7 @@ const InputField = ({ textarea, ...props }: InputFieldProps) => {
 
   return (
     <FormControl isInvalid={!!error}>
-      <FormLabel marginTop={"1rem"} htmlFor={field.name}>
+      <FormLabel marginTop={"0.2rem"} htmlFor={field.name}>
         {props.label}
       </FormLabel>
       {textarea ? (
