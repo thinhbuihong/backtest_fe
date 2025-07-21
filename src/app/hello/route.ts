@@ -1,9 +1,13 @@
 export async function GET() {
-  return Response.json("ok");
+  return new Response(JSON.stringify("ok"), {
+    headers: { "Content-Type": "application/json" },
+  });
 }
 
 export async function POST(req: Request) {
   const payload = await req.json();
 
-  return Response.json({ mes: "hello", payload });
+  return new Response(JSON.stringify({ mes: "hello", payload }), {
+    headers: { "Content-Type": "application/json" },
+  });
 }
