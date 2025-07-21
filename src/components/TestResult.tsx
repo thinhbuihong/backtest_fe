@@ -1,4 +1,4 @@
-import { Container, Text } from "@chakra-ui/react";
+import { Container, Text, Box } from "@chakra-ui/react";
 import Index, { InitialValues } from "../pages";
 import {
   numbLost,
@@ -14,6 +14,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  ResponsiveContainer,
 } from "recharts";
 import useWindowDimensions from "../hooks/useDimentions";
 
@@ -31,7 +32,7 @@ export const TestResult = ({ values }: { values: InitialValues }) => {
   });
 
   return (
-    <Container marginTop={"2rem"}>
+    <Container marginTop={"2rem"} maxWidth="540px" width="100%">
       <Text>Total order: {orders.length}</Text>
       <Text>Wins: {numbWin(orders)}</Text>
       <Text>Lost: {numbLost(orders)}</Text>
@@ -42,20 +43,24 @@ export const TestResult = ({ values }: { values: InitialValues }) => {
         Profit: {gain_p}% ({gain_v}$)
       </Text>
 
-      {values.orders.length && (
-        <LineChart width={500} height={500} data={balance}>
-          {/* <CartesianGrid strokeDasharray="3 3" /> */}
-          {/* <XAxis dataKey="index" /> */}
-          {/* <YAxis /> */}
-          {/* <Legend /> */}
-          <Tooltip />
-          <Line
-            type="monotone"
-            dataKey="value"
-            stroke="#8884d8"
-            activeDot={{ r: 8 }}
-          />
-        </LineChart>
+      {values.orders.length > 0 && (
+        <Box width="100%" maxW="500px" height="300px">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={balance}>
+              {/* <CartesianGrid strokeDasharray="3 3" /> */}
+              {/* <XAxis dataKey="index" /> */}
+              {/* <YAxis /> */}
+              {/* <Legend /> */}
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#8884d8"
+                activeDot={{ r: 8 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </Box>
       )}
     </Container>
   );

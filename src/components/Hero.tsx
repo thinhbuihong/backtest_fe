@@ -12,7 +12,7 @@ export const Hero = ({
     bgGradient="linear(to-l, heroGradientStart, heroGradientEnd)"
     bgClip="text"
   >
-    <Heading fontSize="6vw">{title}</Heading>
+    <Heading fontSize="3vw">{title}</Heading>
   </Flex>
 );
 
