@@ -1,4 +1,4 @@
-import { Button, Box } from "@chakra-ui/react";
+import { Button, Box, useToast } from "@chakra-ui/react";
 
 import { Form, Formik, FormikHelpers } from "formik";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
@@ -43,6 +43,7 @@ const initial_values = {
 export type InitialValues = typeof initial_values;
 
 const Index = () => {
+  const toast = useToast();
   // const { data: meData } = useMeQuery();
   const searchParams = useSearchParams();
   const { refetchUser } = useFetchUser(false);
@@ -134,6 +135,13 @@ const Index = () => {
       ...values,
       balance: +values.balance + +values.profit_v,
     });
+    toast({
+      title: "Profit",
+      description: `+${values.profit_v}`,
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
   };
 
   const handleLost = (values: InitialValues, setValues) => {
@@ -141,6 +149,13 @@ const Index = () => {
     setValues({
       ...values,
       balance: +values.balance - +values.lost_v,
+    });
+    toast({
+      title: "Lost",
+      description: `-${values.lost_v}`,
+      status: "error",
+      duration: 2000,
+      isClosable: true,
     });
   };
 
